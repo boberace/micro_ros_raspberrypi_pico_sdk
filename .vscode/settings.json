@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "pico_wifi_transport.h": "c",
+        "rmw_microros.h": "c"
+    }
+}
