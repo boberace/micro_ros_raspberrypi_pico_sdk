@@ -10,7 +10,7 @@
 #include "pico/stdlib.h"
 #include "pico_wifi_transport.h"
 
-const uint LED_PIN = 15;
+#define ROS_AGENT_IP "10.42.0.1" // "192.168.0.142"
 
 rcl_publisher_t publisher;
 std_msgs__msg__Int32 msg;
@@ -24,7 +24,7 @@ void timer_callback(rcl_timer_t *timer, int64_t last_call_time)
 int main()
 {
 
-    if(set_microros_wifi_transports(WIFI_SSID, WIFI_PASSWORD, "192.168.0.142", 8888))
+    if(set_microros_wifi_transports(WIFI_SSID, WIFI_PASSWORD, ROS_AGENT_IP, 8888))
     {
         // printf("\e[1;1H\e[2J");
         printf("\33[2K\r");
@@ -34,10 +34,9 @@ int main()
         // printf("\e[1;1H\e[2J");
         printf("\33[2K\r");
         printf("Wifi transport set up\n");
+        cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
     }
 
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
 
     rcl_timer_t timer;
     rcl_node_t node;
@@ -49,7 +48,7 @@ int main()
 
     // Wait for agent successful ping for 2 minutes.
     const int timeout_ms = 2000; 
-    const uint8_t attempts = 120;
+    const uint8_t attempts = 10;
 
     rcl_ret_t ret = rmw_uros_ping_agent(timeout_ms, attempts);
 
@@ -59,6 +58,9 @@ int main()
         printf("\33[2K\r");
         printf("Agent unreachable. Exiting...\n");
         return ret;
+    } else  {
+        printf("\33[2K\r");
+        printf("Agent reachable\n");
     }
 
     rclc_support_init(&support, 0, NULL, &allocator);
@@ -80,12 +82,20 @@ int main()
     rclc_executor_init(&executor, &support.context, 1, &allocator);
     rclc_executor_add_timer(&executor, &timer);
 
-    gpio_put(LED_PIN, 1);
-
+    
+    absolute_time_t pt = get_absolute_time();
+    uint led_state = 1;
     msg.data = 0;
     while (true)
     {
         rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+
+        absolute_time_t ct = get_absolute_time();
+        if(ct - pt >= 500000){  
+            pt = ct;
+            led_state = led_state?0:1;
+            cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, led_state);
+        }
     }
     return 0;
 }

@@ -19,6 +19,7 @@ int clock_gettime(clockid_t unused, struct timespec *tp)
 bool pico_serial_transport_open(struct uxrCustomTransport * transport)
 {
     stdio_init_all();
+    sleep_ms(2000);
     return true;
 }
 

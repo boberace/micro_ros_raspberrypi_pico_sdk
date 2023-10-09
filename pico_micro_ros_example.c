@@ -45,7 +45,7 @@ int main()
 
     // Wait for agent successful ping for 2 minutes.
     const int timeout_ms = 1000; 
-    const uint8_t attempts = 120;
+    const uint8_t attempts = 10;
 
     rcl_ret_t ret = rmw_uros_ping_agent(timeout_ms, attempts);
 
@@ -74,11 +74,20 @@ int main()
     rclc_executor_add_timer(&executor, &timer);
 
     gpio_put(LED_PIN, 1);
-
+    absolute_time_t pt = get_absolute_time();
+    uint led_state = 1;
     msg.data = 0;
     while (true)
     {
         rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+        absolute_time_t ct = get_absolute_time();
+        if(ct - pt >= 500000){  
+            pt = ct;
+            led_state = led_state?0:1;
+            gpio_put(LED_PIN, led_state);
+        }
     }
     return 0;
+
+
 }

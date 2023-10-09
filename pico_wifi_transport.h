@@ -30,8 +30,7 @@ static inline bool set_microros_wifi_transports(char *ssid, char *pass, char *ag
 {
 
     stdio_init_all();
-
-    sleep_ms(1000);
+    sleep_ms(2000);
     printf("\33[2K\r");
     if (cyw43_arch_init())
     {
