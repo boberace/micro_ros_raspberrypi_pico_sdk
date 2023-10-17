@@ -1,6 +1,11 @@
 // https://github.com/PICO-MAZING/micro_ros_raspberrypi_pico_sdk/
-#ifndef MICRO_ROS_PICOSDK
-#define MICRO_ROS_PICOSDK
+#ifndef MICRO_ROS_WIFI_PICOSDK
+#define MICRO_ROS_WIFI_PICOSDK
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #include <stdio.h>
 #include <stdint.h>
@@ -72,4 +77,9 @@ static inline bool set_microros_wifi_transports(char *ssid, char *pass, char *ag
     return 0;
 }
 
-#endif // MICRO_ROS_PICOSDK
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif // MICRO_ROS_WIFI_PICOSDK
