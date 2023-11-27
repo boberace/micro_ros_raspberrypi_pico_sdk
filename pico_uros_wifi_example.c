@@ -83,14 +83,14 @@ int main()
     rclc_executor_add_timer(&executor, &timer);
 
     
-    absolute_time_t pt = get_absolute_time();
+    uint64_t pt = to_us_since_boot(get_absolute_time());
     uint led_state = 1;
     msg.data = 0;
     while (true)
     {
         rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
 
-        absolute_time_t ct = get_absolute_time();
+        uint64_t ct = to_us_since_boot(get_absolute_time());
         if(ct - pt >= 500000){  
             pt = ct;
             led_state = led_state?0:1;
