@@ -18,19 +18,17 @@ int clock_gettime(clockid_t unused, struct timespec *tp)
 
 bool pico_serial_transport_open(struct uxrCustomTransport * transport)
 {
-<<<<<<< HEAD
-    stdio_init_all();
-    sleep_ms(2000);
-=======
+
+
     // Ensure that stdio_init_all is only called once on the runtime
     static bool require_init = true;
     if(require_init)
     {
         stdio_init_all();
         require_init = false;
+        sleep_ms(2000);
     }
 
->>>>>>> 0ee858fa2c254ffc9b66be3d5a5ae13fb0b12f03
     return true;
 }
 
